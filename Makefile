@@ -3,7 +3,7 @@ ORG_PATH=github.com/yldio
 REPO_PATH=$(ORG_PATH)/$(PROJ)
 export PATH := $(PWD)/bin:$(PATH)
 
-VERSION ?= '1.1.4'
+VERSION ?= '1.1.5'
 
 DOCKER_REPO=quay.io/yldio/kubernetes-github-auth
 DOCKER_IMAGE=$(DOCKER_REPO):$(VERSION)
@@ -52,7 +52,7 @@ lint:
 
 .PHONY: docker-image
 docker-image:
-	@sudo docker build -t $(DOCKER_IMAGE) .
+	@docker build -t $(DOCKER_IMAGE) .
 
 clean:
 	@rm -rf bin/

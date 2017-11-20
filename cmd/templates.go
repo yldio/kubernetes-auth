@@ -84,6 +84,18 @@ func renderToken(w http.ResponseWriter, redirectURL, idToken, refreshToken strin
 	})
 }
 
+var indexTmpl = template.Must(template.New("index.html").Parse(`<html>
+  <body>
+    <form action="/login" method="post">
+       <input type="submit" value="Login">
+    </form>
+  </body>
+</html>`))
+
+func renderIndex(w http.ResponseWriter) {
+	renderTemplate(w, indexTmpl, nil)
+}
+
 func renderTemplate(w http.ResponseWriter, tmpl *template.Template, data interface{}) {
 	err := tmpl.Execute(w, data)
 	if err == nil {
