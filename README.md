@@ -42,3 +42,16 @@ environment of choice (levels of access will be handled):
 - Login to Github and authorise the YLD github application
 - Follow the instructions and Copy the kubeconfig to your local ~/.kube/config
 - check access with `kubectl get pods`
+
+## Configuring Kubernetes
+
+Once the application has been deployed an running, the next step is to point 
+Kubernetes' OIDC options in the Kube API server.
+
+```
+--oidc-issuer-url=https://dex.sandbox.yld.io
+--oidc-client-id=k8s-auth
+--oidc-ca-file=/etc/kubernetes/ssl/openid-ca.pem
+--oidc-username-claim=email
+--oidc-groups-claim=groups
+```
