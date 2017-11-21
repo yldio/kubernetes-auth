@@ -54,6 +54,10 @@ lint:
 docker-image:
 	@docker build -t $(DOCKER_IMAGE) .
 
+.PHONY: deploy
+deploy:
+	@$(MAKE) -C infrastructure
+
 clean:
 	@rm -rf bin/
 

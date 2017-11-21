@@ -38,9 +38,18 @@ data:
   config.yaml: |
     issuer: https://dex.sandbox.yld.io
     storage:
-      type: kubernetes
+      type: postgres
       config:
-        inCluster: true
+        host: authentication-db-postgresql.authentication.svc.cluster.local
+        database: dex_db
+        user: dex
+        password: 66964843358242dbaaa7778d8477c288
+        ssl:
+          mode: disable
+    # storage:
+    #   type: kubernetes
+    #   config:
+    #     inCluster: true
     web:
       https: 0.0.0.0:5556
       tlsCert: /etc/dex/tls/tls.crt
