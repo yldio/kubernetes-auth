@@ -30,34 +30,23 @@ pre {
     </style>
   </head>
   <body>
-		<h1>Copy the following file to ~/.kube/config to login to the cluster</h1>
+		<h1>Run the following command to set your credentials for this environment</h1>
 		<p> <pre><code>
-apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURoRENDQW15Z0F3SUJBZ0lRYzA1VkdhRVZMUXNreEtQZ2loQWNkakFOQmdrcWhraUc5dzBCQVFzRkFEQmMKTVFrd0J3WURWUVFHRXdBeENUQUhCZ05WQkFnVEFERUpNQWNHQTFVRUJ4TUFNUWt3QndZRFZRUVJFd0F4RVRBUApCZ05WQkFvVENHSnZiM1JyZFdKbE1Ra3dCd1lEVlFRTEV3QXhFREFPQmdOVkJBTVRCMnQxWW1VdFkyRXdIaGNOCk1UY3hNVEE1TVRRMU1qSXpXaGNOTWpBeE1UQTRNVFExTWpJeldqQmNNUWt3QndZRFZRUUdFd0F4Q1RBSEJnTlYKQkFnVEFERUpNQWNHQTFVRUJ4TUFNUWt3QndZRFZRUVJFd0F4RVRBUEJnTlZCQW9UQ0dKdmIzUnJkV0psTVFrdwpCd1lEVlFRTEV3QXhFREFPQmdOVkJBTVRCMnQxWW1VdFkyRXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUFBNElCCkR3QXdnZ0VLQW9JQkFRQy9iU1dJTUluTitJU2tjRStDR0psMk5mN1lVaGNiS3QvMzc1S0QvdkMyY05QM3dsU2UKd1hFRDR0M2RGTzkwU25SSlZPRXd6RTBmUGVPcXpzKzVlOWY4QWxlb2g4Z3l1NlovZlZkZFVFY1dSY2Uyci85UAo5dzRLQTVFdGpEUVJ0bVV2Wk5tazZSVXVjQjJqMmt2NTgzcy8ydHVmbmJLTG00MG04WjhMcUJGaDBzdTcrYjVSCnd2S2pJamhRWHJtY1ZIU3FNeThmZnVQZ1NReVlJZDhXRlRTSTIzbG1RYXErKytLMVJJY1NRSmxxUWJRN1JJODMKNkxPbk42NHBaa0JXZ3dOd0d6NXZYbXdOakZyeXFIa3BMaUNndXYyei8raytNTk1TeVVJbngrYlJYaHo2UmFZYQpJNEwvT2g4cGVscWY5MEpNcDYvUTBXVGxnR3B5RFFHZlJibzFBZ01CQUFHalFqQkFNQTRHQTFVZER3RUIvd1FFCkF3SUNwREFQQmdOVkhSTUJBZjhFQlRBREFRSC9NQjBHQTFVZERnUVdCQlE0ZmZqMkQxZzltRVpJM2FURTBCc1EKdHNIUE9qQU5CZ2txaGtpRzl3MEJBUXNGQUFPQ0FRRUFYNmsvOU8wd3ZVdm53akNXTmgxYUhPQUx0bmx2bHVXRgpLSDJSckoxbkdtTkF2TmJ2aDBSMFd6VlVwa2NYMW5BaTYrMnJ3OXY4WkIzRFZwb1hTN0dENFJwKzlYai9udXFFClpKRUt1bGFJVHFVK0NTekhNejc0cXJxU3lvd3drL0cvOTRPNU1nMVE0cFBtcGIxdHZYdVM3VG9EOUpJSTh5NXoKUFFuRDhMKzVVejJoT1hDWk0wVFNIaXhRTW53TTM4YlRuM1YzMFFtRXpPVFhoNWxpbVArWVhlU0U4RXp6N1JvaApuREpjWVdYc1ZRQlY3UytKNUpvNWtseDNzck9jVUM1emx0Mm1ZcTNLRjBlK1hDYmpFSDJiZVA3eUM0bFV1d3E3ClQveHExNHNFUWNrcFRNSk5SRUZnakRKYklXTTlyWTNHQVdPYVBnU2MvdEp5VDV3NFNDOXFVQT09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
-    server: https://k8s-eu-api.sandbox.yld.io:443
-  name: k8s-eu
-contexts:
-- context:
-    cluster: k8s-eu
-    user: {{ .Email }}
-  name: ""
-current-context: ""
-kind: Config
-preferences: {}
-users:
-- name: {{ .Email }}
-  user:
-    as-user-extra: {}
-    auth-provider:
-      config:
-        client-id: k8s-auth
-        client-secret: ZXhhbXBsZS1hcHAtc2VjcmV0
-        id-token: {{ .IDToken }}
-        idp-issuer-url: {{ .Iss }}
-        refresh-token: {{ .RefreshToken }}
-      name: oidc
+		$ kubectl config set-cluster {{ .Cluster }} \
+				--server={{ .ApiServer }} \
+				--insecure-skip-tls-verify=true
+
+		$ kubectl config set-context {{ .Cluster }} \
+				--cluster={{ .Cluster }} \
+				--namespace={{ .Group }} \
+				--user={{ .Email }}-{{ .Cluster }}
+
+		$ kubectl config set-credentials {{ .Email }}-{{ .Cluster }} --auth-provider=oidc \
+				--auth-provider-arg=client-id={{ .KclientID }} \
+				--auth-provider-arg=client-secretr={{ .KclientSecret }} \
+				--auth-provider-arg=id-token={{ .IDToken }} \
+				--auth-provider-arg=idp-issuer-url={{ .Iss }} \
+				--auth-provider-arg=refresh-token={{ .RefreshToken }}
 		</code></pre> </p>
 		<p>Test the config is working by running the following command:</p>
 		<p> <pre><code>kubectl get nodes</code></pre> </p>
