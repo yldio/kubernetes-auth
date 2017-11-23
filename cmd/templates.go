@@ -18,6 +18,7 @@ type tokenTmplData struct {
 	ApiServer     string
 	KclientID     string
 	KclientSecret string
+	Group         string
 }
 
 var tokenTmpl = template.Must(template.New("token.html").Parse(`<html>
@@ -47,7 +48,7 @@ pre {
 
 		$ kubectl config set-credentials {{ .Email }}-{{ .Cluster }} --auth-provider=oidc \
 				--auth-provider-arg=client-id={{ .KclientID }} \
-				--auth-provider-arg=client-secretr={{ .KclientSecret }} \
+				--auth-provider-arg=client-secret={{ .KclientSecret }} \
 				--auth-provider-arg=id-token={{ .IDToken }} \
 				--auth-provider-arg=idp-issuer-url={{ .Iss }} \
 				--auth-provider-arg=refresh-token={{ .RefreshToken }}
@@ -80,6 +81,7 @@ func renderToken(w http.ResponseWriter, redirectURL, idToken, refreshToken strin
 		ApiServer:     apiServer,
 		KclientID:     kclientId,
 		KclientSecret: kclientSecret,
+		Group:         "default",
 	})
 }
 
