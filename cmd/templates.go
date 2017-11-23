@@ -7,13 +7,17 @@ import (
 )
 
 type tokenTmplData struct {
-	IDToken      string
-	RefreshToken string
-	RedirectURL  string
-	Claims       string
-	Iss          string
-	Aud          string
-	Email        string
+	IDToken       string
+	RefreshToken  string
+	RedirectURL   string
+	Claims        string
+	Iss           string
+	Aud           string
+	Email         string
+	Cluster       string
+	ApiServer     string
+	KclientID     string
+	KclientSecret string
 }
 
 var tokenTmpl = template.Must(template.New("token.html").Parse(`<html>
@@ -61,15 +65,21 @@ pre {
 </html>
 `))
 
-func renderToken(w http.ResponseWriter, redirectURL, idToken, refreshToken string, claims []byte, iss string, aud string, email string) {
+func renderToken(w http.ResponseWriter, redirectURL, idToken, refreshToken string,
+	claims []byte, iss string, aud string, email string, cluster string, apiServer string, kclientId string, kclientSecret string) {
+
 	renderTemplate(w, tokenTmpl, tokenTmplData{
-		IDToken:      idToken,
-		RefreshToken: refreshToken,
-		RedirectURL:  redirectURL,
-		Claims:       string(claims),
-		Iss:          iss,
-		Aud:          aud,
-		Email:        email,
+		IDToken:       idToken,
+		RefreshToken:  refreshToken,
+		RedirectURL:   redirectURL,
+		Claims:        string(claims),
+		Iss:           iss,
+		Aud:           aud,
+		Email:         email,
+		Cluster:       cluster,
+		ApiServer:     apiServer,
+		KclientID:     kclientId,
+		KclientSecret: kclientSecret,
 	})
 }
 

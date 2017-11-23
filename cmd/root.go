@@ -332,5 +332,6 @@ func (a *app) handleCallback(w http.ResponseWriter, r *http.Request) {
 	aud, err := jq.String("aud")
 	email, err := jq.String("email")
 
-	renderToken(w, a.redirectURI, rawIDToken, token.RefreshToken, buff.Bytes(), iss, aud, email)
+	renderToken(w, a.redirectURI, rawIDToken, token.RefreshToken, buff.Bytes(), iss, aud, email,
+		cluster, apiServer, kclientId, kclientSecret)
 }
