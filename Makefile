@@ -5,7 +5,7 @@ export PATH := $(PWD)/bin:$(PATH)
 
 VERSION ?= '1.2.0'
 
-DOCKER_REPO=quay.io/yldio/kubernetes-github-auth
+DOCKER_REPO=quay.io/yldio/kubernetes-auth
 DOCKER_IMAGE=$(DOCKER_REPO):$(VERSION)
 
 $( shell mkdir -p bin )
