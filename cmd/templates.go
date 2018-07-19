@@ -36,9 +36,9 @@ var tokenTmpl = template.Must(template.New("token.html").Parse(`<html>
 	<body>
 		<main class="wrapper">
 			<section class="container" id="dependencies">
-				<h4>Congratulations!</h4>
+				<h4>Congratulations 🎉</h4>
 				<p>You have successfully authenticated with your authentication provider to enable access to your Kubernetes cluster.</p>
-				<p><strong>Run the following command to set your credentials for this environment.</strong></p>
+				<p><strong>Run the following command locally, to ensure <code>kubectl</code> has the appropriate configuration for this environment.</strong></p>
 				<pre><code>kubectl config set-cluster {{ .Cluster }} \
     --server={{ .ApiServer }} \
     --insecure-skip-tls-verify=true
@@ -52,19 +52,19 @@ kubectl config set-credentials {{ .Email }}-{{ .Cluster }} --auth-provider=oidc 
     --auth-provider-arg=idp-issuer-url={{ .Iss }} \
     --auth-provider-arg=refresh-token={{ .RefreshToken }}
 kubectl config use-context {{ .Cluster }}</code></pre>
-				<p>If this is your first time connecting to this environment, use the following to setup your default namespace.</p>
+				<p>If this is your <strong>first time</strong> connecting to this environment, use the following to setup your default namespace.</p>
 				<pre><code>kubectl config set-context $(kubectl config current-context) --namespace=&lt;a namespace&gt;</code></pre> 
 				<p>To confirm everything is working as expected, and that you can access this cluster, please test by running the command <code>kubectl get pods</code>.</p>
 				<details>
-					<summary>Debug Information</summary>
+					<summary>I'm feeling 😕</summary>
 					<p></p>
-					<p>Refresh Token: <code>{{ .RefreshToken }}</code></p>
-					<form action="{{ .RedirectURL }}" method="post">
-						<input type="hidden" name="refresh_token" value="{{ .RefreshToken }}">
-						<input type="submit" value="Redeem refresh token">
-					</form>
 					<p>For any issues send the following code snippet to your Kubernetes administrators.</p>
 					<pre><code>{{ .Claims }}</code></pre>
+					<p>Your super secret refresh token: <code>{{ .RefreshToken }}</code>🔒, do not share with anyone</p>
+					<form action="{{ .RedirectURL }}" method="post">
+						<input type="hidden" name="refresh_token" value="{{ .RefreshToken }}">
+						<input type="submit" value="Redeem refresh token and invalidate current session">
+					</form>
 				</details>
 			</section>
 		</main>
@@ -109,7 +109,7 @@ var indexTmpl = template.Must(template.New("index.html").Parse(`<!DOCTYPE html>
 			<header class="header" id="home">
 				<section class="container">
 					<h1 class="title">Kubernetes Auth</h1>
-					<p class="description">Welcome to our Kubernetes cluster <br><i><small>Currently v1.10.3</small></i></p>
+					<p class="description">Welcome to our Kubernetes cluster 👋<br><i><small>Have a nice day!</small></i></p>
 					<form action="/login" method="post">
 						<fieldset>
 							<input class="button button-black" type="submit" title="Sign In" value="Sign In" style="background-color: #326ce5; border-color: #326ce5">
