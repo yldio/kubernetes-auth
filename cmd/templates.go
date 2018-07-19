@@ -26,7 +26,7 @@ var tokenTmpl = template.Must(template.New("token.html").Parse(`<html>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="description" content="Kubernetes auth paired with dex, to provide a streamlined kubernetes cluster authentication workflow">
-		<title>Kubernetes Auth | Login to your Kubernetes clusters.</title>
+		<title>Kubernetes Auth | Login to Kubernetes clusters.</title>
 		<link rel="icon" href="https://kubernetes.io/images/favicon.png">
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css">
@@ -37,7 +37,7 @@ var tokenTmpl = template.Must(template.New("token.html").Parse(`<html>
 		<main class="wrapper">
 			<section class="container" id="dependencies">
 				<h4>Congratulations 🎉</h4>
-				<p>You have successfully authenticated with your authentication provider to enable access to your Kubernetes cluster.</p>
+				<p>You have successfully authenticated with your authentication provider to enable access to our Kubernetes cluster.</p>
 				<p><strong>Run the following command locally, to ensure <code>kubectl</code> has the appropriate configuration for this environment.</strong></p>
 				<pre><code>kubectl config set-cluster {{ .Cluster }} \
     --server={{ .ApiServer }} \
