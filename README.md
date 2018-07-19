@@ -1,4 +1,4 @@
-# k8s-auth
+# kubernetes-auth
 Authentication Service to connect to our Kubernetes clusters.
 
 ## I have a cluster, lets go!
@@ -50,8 +50,22 @@ Kubernetes' OIDC options in the Kube API server.
 
 ```
 --oidc-issuer-url=https://dex.sandbox.yld.io
---oidc-client-id=k8s-auth
+--oidc-client-id=kubernetes-auth
 --oidc-ca-file=/etc/kubernetes/ssl/openid-ca.pem
 --oidc-username-claim=email
 --oidc-groups-claim=groups
+```
+
+---
+
+# Development
+
+To enable development, it is required to run `dex` locally, so that `kubernetes-auth`
+can resolve and connect to it.
+
+```bash
+echo $(minikube ip) cluster-auth.minikube.local | sudo tee -a /etc/hosts
+minikube ssh 'echo 127.0.2.1 cluster-auth.minikube.local | sudo tee -a /etc/hosts'
+helm upgrade --install dex ./infrastructure/dex --set secrets.github.client.id=abcdef --set secrets.github.client.secret=abcedf
+kubectl apply -f infrastructure/dex/minikube.yaml
 ```

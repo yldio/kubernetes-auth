@@ -1,0 +1,12 @@
+name: dex
+description: OpenID Connect Identity (OIDC) and OAuth 2.0 Provider with Pluggable Connectors
+version: 1.0.1
+keywords:
+  - dex
+  - github
+  - coreos
+  - kubernetes
+home: https://github.com/coreos/dex/
+maintainers:
+  - name: tomgco
+email: tom@yld.io

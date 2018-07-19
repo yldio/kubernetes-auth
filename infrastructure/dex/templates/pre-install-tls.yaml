@@ -1,0 +1,17 @@
+# This shows a secret as a pre-install hook.
+# A pre-install hook is run before the rest of the chart is loaded.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "dex.name" . }}-tls
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ template "dex.name" . }}
+type: kubernetes.io/tls
+data:
+  tls.crt: |-
+    {{ .Values.secrets.tls.certificate }}
+  tls.key: |-
+    {{ .Values.secrets.tls.key }}

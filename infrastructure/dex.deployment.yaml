@@ -56,4 +56,4 @@ spec:
             path: config.yaml
       - name: tls
         secret:
-          secretName: dex.cni.digital.tls
+          secretName: dex.yld.io.tls

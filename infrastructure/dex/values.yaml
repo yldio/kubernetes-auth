@@ -1,0 +1,64 @@
+replicaCount: 1
+restartPolicy: Never
+
+image:
+  repository: quay.io/coreos/dex
+  tag: v2.10.0
+  pullPolicy: IfNotPresent
+
+service:
+  annotations: {
+  }
+  clusterIP: ""
+  externalIPs: []
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  type: ClusterIP
+  port: 8888
+  nodePort: ""
+
+config:
+  database: dex_db
+  user: dex
+  password: testy123
+  issuer: http://cluster-auth.minikube.local:32000/identity
+  dexRedirectURI: http://cluster-auth.minikube.local:32000/identity/callback
+  authRedirectURIs: [
+    "http://cluster-auth.minikube.local:32000/callback",
+    "http://127.0.0.1:5555/callback"
+  ]
+
+secrets:
+  tls:
+    certificate: 
+    key: 
+  github:
+    client:
+      id:
+      secret:
+
+postgresql:
+  enabled: true
+  postgresDatabase: dex_db
+  postgresUser: dex
+  postgresPassword: testy123
+  persistence:
+    enabled: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 100m
+      memory: 256Mi
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+ingress:
+  host: cluster-auth.minikube.local

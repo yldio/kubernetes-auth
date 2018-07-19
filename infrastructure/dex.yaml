@@ -43,7 +43,7 @@ data:
         host: authentication-db-postgresql.authentication.svc.cluster.local
         database: dex_db
         user: dex
-        password: 66964843358242dbaaa7778d8477c288
+        password: testy123
         ssl:
           mode: disable
     # storage:

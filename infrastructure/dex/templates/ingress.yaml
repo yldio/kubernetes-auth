@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "dex.name" . }}
+  # annotations:
+  #   kubernetes.io/ingress.class: traefik
+
+spec:
+  backend:
+    serviceName: {{ template "dex.name" . }}
+    servicePort: http
+  rules:
+  - host: {{ .Values.ingress.host }}
+    http:
+      paths:
+      - path: /identity
+        backend:
+          serviceName: {{ template "dex.name" . }}
+          servicePort: http

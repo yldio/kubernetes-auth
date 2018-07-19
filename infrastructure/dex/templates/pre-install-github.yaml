@@ -1,0 +1,15 @@
+# This shows a secret as a pre-install hook.
+# A pre-install hook is run before the rest of the chart is loaded.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "dex.name" . }}-github
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ template "dex.name" . }}
+type: Opaque
+data:
+  client-id: {{ .Values.secrets.github.client.id | b64enc }}
+  client-secret: {{ .Values.secrets.github.client.secret | b64enc }}

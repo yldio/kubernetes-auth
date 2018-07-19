@@ -1,9 +1,9 @@
-PROJ=k8s-auth
+PROJ=kubernetes-auth
 ORG_PATH=github.com/yldio
 REPO_PATH=$(ORG_PATH)/$(PROJ)
 export PATH := $(PWD)/bin:$(PATH)
 
-VERSION ?= '1.1.5'
+VERSION ?= '1.2.0'
 
 DOCKER_REPO=quay.io/yldio/kubernetes-github-auth
 DOCKER_IMAGE=$(DOCKER_REPO):$(VERSION)
@@ -18,14 +18,14 @@ export GOBIN=$(PWD)/bin
 LD_FLAGS=-w -X $(REPO_PATH)/version.Version=$(VERSION)
 REL_LD_FLAGS=-s $(LD_FLAGS)
 
-build: bin/k8s-auth.dev
+build: bin/kubernetes-auth.dev
 
-bin/k8s-auth.dev:
-	@go build -o bin/k8s-auth.dev -v -ldflags "$(LD_FLAGS)" $(REPO_PATH)/cmd
+bin/kubernetes-auth.dev:
+	@go build -o bin/kubernetes-auth.dev -v -ldflags "$(LD_FLAGS)" $(REPO_PATH)/cmd
 
 .PHONY: release-binary
 release-binary:
-	@go build -o bin/k8s-auth -v -ldflags "$(REL_LD_FLAGS)" $(REPO_PATH)/cmd
+	@go build -o bin/kubernetes-auth -v -ldflags "$(REL_LD_FLAGS)" $(REPO_PATH)/cmd
 
 .PHONY: revendor
 revendor:
