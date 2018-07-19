@@ -44,7 +44,6 @@ var tokenTmpl = template.Must(template.New("token.html").Parse(`<html>
     --insecure-skip-tls-verify=true
 kubectl config set-context {{ .Cluster }} \
     --cluster={{ .Cluster }} \
-    --namespace={{ .Group }} \
     --user={{ .Email }}-{{ .Cluster }}
 kubectl config set-credentials {{ .Email }}-{{ .Cluster }} --auth-provider=oidc \
     --auth-provider-arg=client-id={{ .KclientID }} \
