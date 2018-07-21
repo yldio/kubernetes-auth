@@ -39,7 +39,8 @@ var tokenTmpl = template.Must(template.New("token.html").Parse(`<html>
 				<h4>Congratulations 🎉</h4>
 				<p>You have successfully authenticated with your authentication provider to enable access to our Kubernetes cluster.</p>
 				<p><strong>Run the following command locally, to ensure <code>kubectl</code> has the appropriate configuration for this environment.</strong></p>
-				<pre><code>kubectl config set-cluster {{ .Cluster }} \
+				<p><a class="button" href="#" onclick='var node = document.getElementById("kubectl");var selection = window.getSelection();var range = document.createRange();range.selectNodeContents(node);selection.removeAllRanges();selection.addRange(range);document.execCommand("copy");'>Copy Command</a></p>
+				<pre><code id="kubectl">kubectl config set-cluster {{ .Cluster }} \
     --server={{ .ApiServer }} \
     --insecure-skip-tls-verify=true
 kubectl config set-context {{ .Cluster }} \
