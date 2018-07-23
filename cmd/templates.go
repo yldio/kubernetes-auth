@@ -40,18 +40,9 @@ var tokenTmpl = template.Must(template.New("token.html").Parse(`<html>
 				<p>You have successfully authenticated with your authentication provider to enable access to our Kubernetes cluster.</p>
 				<p><strong>Run the following command locally, to ensure <code>kubectl</code> has the appropriate configuration for this environment.</strong></p>
 				<p><a class="button" href="#" onclick='var node = document.getElementById("kubectl");var selection = window.getSelection();var range = document.createRange();range.selectNodeContents(node);selection.removeAllRanges();selection.addRange(range);document.execCommand("copy");'>Copy Command</a></p>
-				<pre><code id="kubectl">kubectl config set-cluster {{ .Cluster }} \
-    --server={{ .ApiServer }} \
-    --insecure-skip-tls-verify=true
-kubectl config set-context {{ .Cluster }} \
-    --cluster={{ .Cluster }} \
-    --user={{ .Email }}-{{ .Cluster }}
-kubectl config set-credentials {{ .Email }}-{{ .Cluster }} --auth-provider=oidc \
-    --auth-provider-arg=client-id={{ .KclientID }} \
-    --auth-provider-arg=client-secret={{ .KclientSecret }} \
-    --auth-provider-arg=id-token={{ .IDToken }} \
-    --auth-provider-arg=idp-issuer-url={{ .Iss }} \
-    --auth-provider-arg=refresh-token={{ .RefreshToken }}
+				<pre><code id="kubectl">kubectl config set-cluster {{ .Cluster }} --server={{ .ApiServer }} --insecure-skip-tls-verify=true
+kubectl config set-context {{ .Cluster }} --cluster={{ .Cluster }} --user={{ .Email }}-{{ .Cluster }}
+kubectl config set-credentials {{ .Email }}-{{ .Cluster }} --auth-provider=oidc --auth-provider-arg=client-id={{ .KclientID }} --auth-provider-arg=client-secret={{ .KclientSecret }} --auth-provider-arg=id-token={{ .IDToken }} --auth-provider-arg=idp-issuer-url={{ .Iss }} --auth-provider-arg=refresh-token={{ .RefreshToken }}
 kubectl config use-context {{ .Cluster }}</code></pre>
 				<p>If this is your <strong>first time</strong> connecting to this environment, use the following to setup your default namespace.</p>
 				<pre><code>kubectl config set-context $(kubectl config current-context) --namespace=&lt;a namespace&gt;</code></pre> 
