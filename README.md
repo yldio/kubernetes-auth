@@ -46,27 +46,7 @@ Kubernetes' OIDC options in the Kube API server.
 --oidc-groups-claim=groups
 ```
 
-
-### Preamble
-
-First we need to have a primer on how this all fits togther, this repo is an application that sits between [Dex]() and Kubernetes using [OIDC tokens](https://kubernetes.io/docs/admin/authentication/#openid-connect-tokens).
-
-The outcome after configuring will be asociated RBAC groups inside of the Kubernetes cluster based on the Github organisation and the teams which the member belongs to.
-
-For a Github Organisation as such:
-
-### Yldio
-
-#### Teams
-- devops
-- software-engineering
-
-It becomes possible to map the team `devops` with the Kuerbetes RBAC ClusterRole `cluster-admin` to give anyone in the team `devops` cluster-wide access to the kubernetes cluster. As such if we gave the team `software-engineering` a Role to a specific namespace, any new members will have access to the kubernetes cluster in that specific namespace.  
-  
-
 ### Dex? Aka Kubernetes Authentication
-
-![Workflow Image...](https://d33wubrfki0l68.cloudfront.net/d65bee40cabcf886c89d1015334555540d38f12e/c6a46/images/docs/admin/k8s_oidc_login.svg)
 
 Dex acts as an intermediary between Github authentication and Kubernetes acting
 as an identity provider. This gives us the flexibility to move to another backed
@@ -84,13 +64,31 @@ environment of choice (levels of access will be handled):
 - Follow the instructions and Copy the kubeconfig to your local ~/.kube/config
 - check access with `kubectl get pods`
 
--
+### How does kubernetes-auth work with Dex?
+
+We recommend reading the [Dex](https://github.com/coreos/dex) [Documentation](https://github.com/coreos/dex/blob/master/Documentation/using-dex.md) before continuing as it is
+required to be working correctly before kubernetes-auth can start.
+
+In our example helm chart for kubernetes-auth and dex, we specifically use only
+the Github Connector and the PostgresSQL backend. This was the working combination
+at time of implementation, but we plan to extend the chart to make it configurable.
+
+For a Github Organisation as such:
+
+- yldio
+  - Team
+    - platform
+    - software-engineering
+
+It becomes possible to map the team `platform` with the Kubernetes RBAC ClusterRole `cluster-admin` to give anyone in the team `platform` cluster-wide access to the kubernetes cluster. As such if we gave the team `software-engineering` a Role to a specific namespace, any new members will have access to the Kubernetes cluster in that specific namespace.
+
+---
 
 ### Contribute
 
 We're delighted that you'd like to contribute to kubernetes-auth, as we're always looking for ways to improve it.
 
-If there is anything that you'd like to improve or propose, please submit a pull request. And remember to check the contribution [guidelines](CONTRIBUTING.md)!.
+If there is anything that you'd like to improve or propose, please submit a pull request. And remember to check the contribution [guidelines](CONTRIBUTING.md)!
 
 #### Start
 
