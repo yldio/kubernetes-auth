@@ -13,13 +13,13 @@ It also provides an easy method to switch out Dex Connectors, so when your team
 ends up moving from Github to Okta, you have a minimal set of changes to
 implement.
 
-## What does it look like?
+### What does it look like?
 
 Login Page            | Command Page
 :-------------------------:|:-------------------------:
 ![Login page](./images/login.png) | ![Command page](./images/commands.png)
 
-## I have a cluster, lets go!
+### I have a cluster, lets go!
 
 [![Status](https://img.shields.io/badge/chart%20status-untested-orange.svg?style=flat-square)]()
 
@@ -47,7 +47,7 @@ Kubernetes' OIDC options in the Kube API server.
 ```
 
 
-## Preamble
+### Preamble
 
 First we need to have a primer on how this all fits togther, this repo is an application that sits between [Dex]() and Kubernetes using [OIDC tokens](https://kubernetes.io/docs/admin/authentication/#openid-connect-tokens).
 
@@ -56,6 +56,7 @@ The outcome after configuring will be asociated RBAC groups inside of the Kubern
 For a Github Organisation as such:
 
 ### Yldio
+
 #### Teams
 - devops
 - software-engineering
@@ -63,7 +64,7 @@ For a Github Organisation as such:
 It becomes possible to map the team `devops` with the Kuerbetes RBAC ClusterRole `cluster-admin` to give anyone in the team `devops` cluster-wide access to the kubernetes cluster. As such if we gave the team `software-engineering` a Role to a specific namespace, any new members will have access to the kubernetes cluster in that specific namespace.  
   
 
-## Dex? Aka Kubernetes Authentication
+### Dex? Aka Kubernetes Authentication
 
 ![Workflow Image...](https://d33wubrfki0l68.cloudfront.net/d65bee40cabcf886c89d1015334555540d38f12e/c6a46/images/docs/admin/k8s_oidc_login.svg)
 
@@ -83,16 +84,29 @@ environment of choice (levels of access will be handled):
 - Follow the instructions and Copy the kubeconfig to your local ~/.kube/config
 - check access with `kubectl get pods`
 
----
+-
 
-## Development
+### Contribute
 
-To enable development, it is required to run `dex` locally, so that `kubernetes-auth`
-can resolve and connect to it.
+We're delighted that you'd like to contribute to kubernetes-auth, as we're always looking for ways to improve it.
 
-```bash
+If there is anything that you'd like to improve or propose, please submit a pull request. And remember to check the contribution [guidelines](CONTRIBUTING.md)!.
+
+#### Start
+
+##### Dependencies
+
+- Minikube
+- kubectl
+- helm
+
+```bash static
 echo $(minikube ip) cluster-auth.minikube.local | sudo tee -a /etc/hosts
 minikube ssh 'echo 127.0.2.1 cluster-auth.minikube.local | sudo tee -a /etc/hosts'
 helm upgrade --install dex ./charts/dex --set secrets.github.client.id=abcdef --set secrets.github.client.secret=abcedf
 kubectl apply -f charts/dex/minikube.yaml
 ```
+
+### License
+
+[Apache-2.0](LICENSE)
