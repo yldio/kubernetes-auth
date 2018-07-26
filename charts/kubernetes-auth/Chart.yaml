@@ -1,0 +1,12 @@
+name: kubernetes-auth
+description: Connect your Kubernetes cluster to dex and Github
+version: 1.0.0
+keywords:
+  - auth
+  - dex
+  - github
+  - Kubernetes
+home: https://github.com/yldio/kubernetes-auth
+maintainers:
+  - name: tomgco
+    email: tom@yld.io

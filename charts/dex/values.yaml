@@ -22,6 +22,7 @@ config:
   user: dex
   password: testy123
   issuer: http://cluster-auth.minikube.local:32000/identity
+  clientSecret: ZXhhbXBs1hHAtc2VjcmV0
   dexRedirectURI: http://cluster-auth.minikube.local:32000/identity/callback
   authRedirectURIs: [
     "http://cluster-auth.minikube.local:32000/callback",

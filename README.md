@@ -5,12 +5,12 @@ a Kubernetes cluster through the configuration and use of [Dex](https://github.c
 [OIDC](https://github.com/coreos/dex/blob/5e34f0d1a6e22725b39f521178baac2cddd0a306/Documentation/openid-connect.md) 
 and [Kubernetes OIDC](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#openid-connect-tokens)
 
-This has been developed to enable ease of use of initial developer setup and to
-provide an easy way to switch between environments / regions in a non-federated
+This has been developed for developers in large teams, with lots of new joiners to
+provide an easy way to switch between environments / regions in non-federated
 deployments.
 
-It also provide an easy method to switch out Dex Connectors, so when your team
-ends up moving from Github Teams to Okta, you have a minimal set of changes to
+It also provides an easy method to switch out Dex Connectors, so when your team
+ends up moving from Github to Okta, you have a minimal set of changes to
 implement.
 
 ## What does it look like?
@@ -21,9 +21,31 @@ Login Page            | Command Page
 
 ## I have a cluster, lets go!
 
+![Status](https://img.shields.io/badge/chart%20status-untested-orange.svg?longCache=true&style=flat-square)
+
+Install dex:
+
 ```bash
-kubectl apply -f infrastructure/
+helm upgrade --install dex ./charts/dex --set secrets.github.client.id=bleh --set secrets.github.client.secret=blah
 ```
+
+Install kubernetes-auth:
+
+```
+helm upgrade --install kubernetes-auth ./charts/kubernetes-auth
+```
+
+Once the application has been deployed an running, the next step is to point
+Kubernetes' OIDC options in the Kube API server.
+
+```
+--oidc-issuer-url=https://dex.sandbox.yld.io
+--oidc-client-id=kubernetes-auth
+--oidc-ca-file=/etc/kubernetes/ssl/openid-ca.pem
+--oidc-username-claim=email
+--oidc-groups-claim=groups
+```
+
 
 ## Preamble
 
@@ -61,22 +83,9 @@ environment of choice (levels of access will be handled):
 - Follow the instructions and Copy the kubeconfig to your local ~/.kube/config
 - check access with `kubectl get pods`
 
-## Configuring Kubernetes
-
-Once the application has been deployed an running, the next step is to point 
-Kubernetes' OIDC options in the Kube API server.
-
-```
---oidc-issuer-url=https://dex.sandbox.yld.io
---oidc-client-id=kubernetes-auth
---oidc-ca-file=/etc/kubernetes/ssl/openid-ca.pem
---oidc-username-claim=email
---oidc-groups-claim=groups
-```
-
 ---
 
-# Development
+## Development
 
 To enable development, it is required to run `dex` locally, so that `kubernetes-auth`
 can resolve and connect to it.
@@ -84,6 +93,6 @@ can resolve and connect to it.
 ```bash
 echo $(minikube ip) cluster-auth.minikube.local | sudo tee -a /etc/hosts
 minikube ssh 'echo 127.0.2.1 cluster-auth.minikube.local | sudo tee -a /etc/hosts'
-helm upgrade --install dex ./infrastructure/dex --set secrets.github.client.id=abcdef --set secrets.github.client.secret=abcedf
-kubectl apply -f infrastructure/dex/minikube.yaml
+helm upgrade --install dex ./charts/dex --set secrets.github.client.id=abcdef --set secrets.github.client.secret=abcedf
+kubectl apply -f charts/dex/minikube.yaml
 ```
