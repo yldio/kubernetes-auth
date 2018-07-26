@@ -15,7 +15,9 @@ implement.
 
 ## What does it look like?
 
-![Login page](./images/login.png) ![Command page](./images/commands.png)
+Login Page            | Command Page
+:-------------------------:|:-------------------------:
+![Login page](./images/login.png) | ![Command page](./images/commands.png)
 
 ## I have a cluster, lets go!
 
