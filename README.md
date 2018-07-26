@@ -1,5 +1,21 @@
 # kubernetes-auth
-Authentication Service to connect to our Kubernetes clusters.
+
+An authentication front-end to Kubernetes clusters, enabling users to log into
+a Kubernetes cluster through the configuration and use of [Dex](https://github.com/coreos/dex),
+[OIDC](https://github.com/coreos/dex/blob/5e34f0d1a6e22725b39f521178baac2cddd0a306/Documentation/openid-connect.md) 
+and [Kubernetes OIDC](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#openid-connect-tokens)
+
+This has been developed to enable ease of use of initial developer setup and to
+provide an easy way to switch between environments / regions in a non-federated
+deployments.
+
+It also provide an easy method to switch out Dex Connectors, so when your team
+ends up moving from Github Teams to Okta, you have a minimal set of changes to
+implement.
+
+## What does it look like?
+
+![Login page](./images/login.png) ![Command page](./images/commands.png)
 
 ## I have a cluster, lets go!
 
