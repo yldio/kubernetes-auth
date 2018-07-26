@@ -21,7 +21,7 @@ Login Page            | Command Page
 
 ## I have a cluster, lets go!
 
-![Status](https://img.shields.io/badge/chart%20status-untested-orange.svg?longCache=true&style=flat-square)
+[![Status](https://img.shields.io/badge/chart%20status-untested-orange.svg?style=flat-square)]()
 
 Install dex:
 
