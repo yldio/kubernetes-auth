@@ -1,31 +1,52 @@
 # kubernetes-auth
-Authentication Service to connect to our Kubernetes clusters.
 
-## I have a cluster, lets go!
+An authentication front-end to Kubernetes clusters, enabling users to log into
+a Kubernetes cluster through the configuration and use of [Dex](https://github.com/coreos/dex),
+[OIDC](https://github.com/coreos/dex/blob/5e34f0d1a6e22725b39f521178baac2cddd0a306/Documentation/openid-connect.md) 
+and [Kubernetes OIDC](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#openid-connect-tokens)
+
+This has been developed for developers in large teams, with lots of new joiners to
+provide an easy way to switch between environments / regions in non-federated
+deployments.
+
+It also provides an easy method to switch out Dex Connectors, so when your team
+ends up moving from Github to Okta, you have a minimal set of changes to
+implement.
+
+### What does it look like?
+
+Login Page            | Command Page
+:-------------------------:|:-------------------------:
+![Login page](./images/login.png) | ![Command page](./images/commands.png)
+
+### I have a cluster, lets go!
+
+[![Status](https://img.shields.io/badge/chart%20status-untested-orange.svg?style=flat-square)]()
+
+Install dex:
 
 ```bash
-kubectl apply -f infrastructure/
+helm upgrade --install dex ./charts/dex --set secrets.github.client.id=bleh --set secrets.github.client.secret=blah
 ```
 
-## Preamble
+Install kubernetes-auth:
 
-First we need to have a primer on how this all fits togther, this repo is an application that sits between [Dex]() and Kubernetes using [OIDC tokens](https://kubernetes.io/docs/admin/authentication/#openid-connect-tokens).
+```
+helm upgrade --install kubernetes-auth ./charts/kubernetes-auth
+```
 
-The outcome after configuring will be asociated RBAC groups inside of the Kubernetes cluster based on the Github organisation and the teams which the member belongs to.
+Once the application has been deployed an running, the next step is to point
+Kubernetes' OIDC options in the Kube API server.
 
-For a Github Organisation as such:
+```
+--oidc-issuer-url=https://dex.sandbox.yld.io
+--oidc-client-id=kubernetes-auth
+--oidc-ca-file=/etc/kubernetes/ssl/openid-ca.pem
+--oidc-username-claim=email
+--oidc-groups-claim=groups
+```
 
-### Yldio
-#### Teams
-- devops
-- software-engineering
-
-It becomes possible to map the team `devops` with the Kuerbetes RBAC ClusterRole `cluster-admin` to give anyone in the team `devops` cluster-wide access to the kubernetes cluster. As such if we gave the team `software-engineering` a Role to a specific namespace, any new members will have access to the kubernetes cluster in that specific namespace.  
-  
-
-## Dex? Aka Kubernetes Authentication
-
-![Workflow Image...](https://d33wubrfki0l68.cloudfront.net/d65bee40cabcf886c89d1015334555540d38f12e/c6a46/images/docs/admin/k8s_oidc_login.svg)
+### Dex? Aka Kubernetes Authentication
 
 Dex acts as an intermediary between Github authentication and Kubernetes acting
 as an identity provider. This gives us the flexibility to move to another backed
@@ -43,29 +64,47 @@ environment of choice (levels of access will be handled):
 - Follow the instructions and Copy the kubeconfig to your local ~/.kube/config
 - check access with `kubectl get pods`
 
-## Configuring Kubernetes
+### How does kubernetes-auth work with Dex?
 
-Once the application has been deployed an running, the next step is to point 
-Kubernetes' OIDC options in the Kube API server.
+We recommend reading the [Dex](https://github.com/coreos/dex) [Documentation](https://github.com/coreos/dex/blob/master/Documentation/using-dex.md) before continuing as it is
+required to be working correctly before kubernetes-auth can start.
 
-```
---oidc-issuer-url=https://dex.sandbox.yld.io
---oidc-client-id=kubernetes-auth
---oidc-ca-file=/etc/kubernetes/ssl/openid-ca.pem
---oidc-username-claim=email
---oidc-groups-claim=groups
-```
+In our example helm chart for kubernetes-auth and dex, we specifically use only
+the Github Connector and the PostgresSQL backend. This was the working combination
+at time of implementation, but we plan to extend the chart to make it configurable.
+
+For a Github Organisation as such:
+
+- yldio
+  - Team
+    - platform
+    - software-engineering
+
+It becomes possible to map the team `platform` with the Kubernetes RBAC ClusterRole `cluster-admin` to give anyone in the team `platform` cluster-wide access to the kubernetes cluster. As such if we gave the team `software-engineering` a Role to a specific namespace, any new members will have access to the Kubernetes cluster in that specific namespace.
 
 ---
 
-# Development
+### Contribute
 
-To enable development, it is required to run `dex` locally, so that `kubernetes-auth`
-can resolve and connect to it.
+We're delighted that you'd like to contribute to kubernetes-auth, as we're always looking for ways to improve it.
 
-```bash
+If there is anything that you'd like to improve or propose, please submit a pull request. And remember to check the contribution [guidelines](CONTRIBUTING.md)!
+
+#### Start
+
+##### Dependencies
+
+- Minikube
+- kubectl
+- helm
+
+```bash static
 echo $(minikube ip) cluster-auth.minikube.local | sudo tee -a /etc/hosts
 minikube ssh 'echo 127.0.2.1 cluster-auth.minikube.local | sudo tee -a /etc/hosts'
-helm upgrade --install dex ./infrastructure/dex --set secrets.github.client.id=abcdef --set secrets.github.client.secret=abcedf
-kubectl apply -f infrastructure/dex/minikube.yaml
+helm upgrade --install dex ./charts/dex --set secrets.github.client.id=abcdef --set secrets.github.client.secret=abcedf
+kubectl apply -f charts/dex/minikube.yaml
 ```
+
+### License
+
+[Apache-2.0](LICENSE)

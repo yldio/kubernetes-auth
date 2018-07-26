@@ -29,18 +29,18 @@ data:
         clientSecret: $GITHUB_CLIENT_SECRET
         redirectURI: {{ .Values.config.dexRedirectURI }}
         orgs:
-        - name: conde-nast-international
+        - name: yldio
     oauth2:
       skipApprovalScreen: true
     enablePasswordDB: false
     staticClients:
-    - id: k8s-auth
+    - id: kubernetes-auth
       redirectURIs:
 {{ toYaml .Values.config.authRedirectURIs | indent 6 }}
       name: 'Kubernetes authentication'
-      secret: ZXhhbXBsZS1hcHAtc2VjcmV0
+      secret: {{ .Values.config.clientSecret }}
     expiry:
        signingKeys: "3h"
        idTokens: "12h"
     logger:
-      level: "debug"
+      level: "warning"

@@ -1,0 +1,24 @@
+replicaCount: 1
+restartPolicy: Never
+
+ingress:
+  host: cluster-auth.minikube.local:32000
+
+# Repo can be found here: https://github.com/yldio/kubernetes-auth
+image:
+  repository: quay.io/yldio/kubernetes-auth
+  tag: 1.2.2
+  pullPolicy: IfNotPresent
+
+deployment:
+  issuer: http://cluster-auth.minikube.local:32000/identity
+  redirectURI: http://cluster-auth.minikube.local:32000/identity/callback
+  apiServer: https://api.minikube.local:443
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi

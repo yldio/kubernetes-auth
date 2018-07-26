@@ -2,9 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ template "dex.name" . }}
-  # annotations:
-  #   kubernetes.io/ingress.class: traefik
-
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4 }}
 spec:
   backend:
     serviceName: {{ template "dex.name" . }}

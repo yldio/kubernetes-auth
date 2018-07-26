@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "auth.name" . }}
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+
+spec:
+  backend:
+    serviceName: {{ template "auth.name" . }}
+    servicePort: http
+  rules:
+  - host: {{ .Values.ingress.host }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "auth.name" . }}
+          servicePort: http

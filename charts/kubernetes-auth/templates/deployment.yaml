@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "auth.name" . }}
+  labels:
+    # The "heritage" label is used to track which tool deployed a given chart.
+    # It is useful for admins who want to see what releases a particular tool
+    # is responsible for.
+    heritage: {{ .Release.Service }}
+    # The "release" convention makes it easy to tie a release to all of the
+    # Kubernetes resources that were created as part of that release.
+    release: {{ .Release.Name }}
+    # This makes it easy to audit chart usage.
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ template "auth.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "auth.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "auth.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "auth.name" . }}
+      containers:
+      - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        name: {{ template "auth.name" . }}
+        command: ["/usr/local/bin/k8s-auth", "--issuer", "{{ .Values.deployment.issuer }}", "--redirect-uri", "{{ .Values.deployment.redirectURI }}", "--listen", "http://0.0.0.0:5555", "--cluster", "{{ .Values.env }}", "--api-server", "{{ .Values.deployment.apiServer }}"]
+        resources:
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+        securityContext:
+          readOnlyRootFilesystem: true
+        ports:
+        - name: http
+          containerPort: 5555
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
