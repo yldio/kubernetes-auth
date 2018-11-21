@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net"
@@ -18,7 +19,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/coreos/go-oidc"
+	oidc "github.com/coreos/go-oidc"
 	"github.com/jmoiron/jsonq"
 	"github.com/spf13/cobra"
 	"golang.org/x/oauth2"
@@ -91,17 +92,19 @@ func (d debugTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 }
 
 var (
-	a             app
-	issuerURL     string
-	listen        string
-	tlsCert       string
-	tlsKey        string
-	rootCAs       string
-	cluster       string
-	apiServer     string
-	kclientId     string
-	kclientSecret string
-	debug         bool
+	a                 app
+	issuerURL         string
+	listen            string
+	tlsCert           string
+	tlsKey            string
+	rootCAs           string
+	cluster           string
+	apiServer         string
+	kclientId         string
+	kclientSecret     string
+	indexTemplatePath string
+	tokenTemplatePath string
+	debug             bool
 )
 
 func cmd() *cobra.Command {
@@ -206,6 +209,8 @@ func cmd() *cobra.Command {
 	c.Flags().StringVar(&tlsCert, "tls-cert", "", "X509 cert file to present when serving HTTPS.")
 	c.Flags().StringVar(&tlsKey, "tls-key", "", "Private key for the HTTPS cert.")
 	c.Flags().StringVar(&rootCAs, "issuer-root-ca", "", "Root certificate authorities for the issuer. Defaults to host certs.")
+	c.Flags().StringVar(&indexTemplatePath, "index-template-path", "", "Path to custom index page template file.")
+	c.Flags().StringVar(&tokenTemplatePath, "token-template-path", "", "Path to custom token page template file.")
 	c.Flags().BoolVar(&debug, "debug", false, "Print all request and responses from the OpenID Connect issuer.")
 
 	c.Flags().StringVar(&cluster, "cluster", "kubernetes", "Name of the cluster which this deployment belongs to")
@@ -233,7 +238,11 @@ func (a *app) oauth2Config(scopes []string) *oauth2.Config {
 }
 
 func (a *app) handleIndex(w http.ResponseWriter, r *http.Request) {
-	renderIndex(w)
+	if indexTemplatePath != "" {
+		renderTemplate(w, template.Must(template.ParseFiles(indexTemplatePath)), nil)
+		return
+	}
+	renderTemplate(w, indexTmpl, nil)
 }
 
 func (a *app) handleLogin(w http.ResponseWriter, r *http.Request) {
@@ -332,6 +341,25 @@ func (a *app) handleCallback(w http.ResponseWriter, r *http.Request) {
 	aud, err := jq.String("aud")
 	email, err := jq.String("email")
 
-	renderToken(w, a.redirectURI, rawIDToken, token.RefreshToken, buff.Bytes(), iss, aud, email,
-		cluster, apiServer, kclientId, kclientSecret)
+	tmplData := tokenTmplData{
+		IDToken:       rawIDToken,
+		RefreshToken:  token.RefreshToken,
+		RedirectURL:   a.redirectURI,
+		Claims:        string(claims),
+		Iss:           iss,
+		Aud:           aud,
+		Email:         email,
+		Cluster:       cluster,
+		ApiServer:     apiServer,
+		KclientID:     kclientId,
+		KclientSecret: kclientSecret,
+		Group:         "default",
+	}
+
+	if tokenTemplatePath != "" {
+		renderTemplate(w, template.Must(template.ParseFiles(tokenTemplatePath)), tmplData)
+		return
+	}
+
+	renderTemplate(w, tokenTmpl, tmplData)
 }
