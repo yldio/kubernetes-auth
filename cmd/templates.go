@@ -64,25 +64,6 @@ kubectl config use-context {{ .Cluster }}</code></pre>
 </html>
 `))
 
-func renderToken(w http.ResponseWriter, redirectURL, idToken, refreshToken string,
-	claims []byte, iss string, aud string, email string, cluster string, apiServer string, kclientId string, kclientSecret string) {
-
-	renderTemplate(w, tokenTmpl, tokenTmplData{
-		IDToken:       idToken,
-		RefreshToken:  refreshToken,
-		RedirectURL:   redirectURL,
-		Claims:        string(claims),
-		Iss:           iss,
-		Aud:           aud,
-		Email:         email,
-		Cluster:       cluster,
-		ApiServer:     apiServer,
-		KclientID:     kclientId,
-		KclientSecret: kclientSecret,
-		Group:         "default",
-	})
-}
-
 var indexTmpl = template.Must(template.New("index.html").Parse(`<!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -129,10 +110,6 @@ sudo mv ./kubectl /usr/local/bin/kubectl</code></pre>
 		</main>
 	</body>
 </html>`))
-
-func renderIndex(w http.ResponseWriter) {
-	renderTemplate(w, indexTmpl, nil)
-}
 
 func renderTemplate(w http.ResponseWriter, tmpl *template.Template, data interface{}) {
 	err := tmpl.Execute(w, data)
